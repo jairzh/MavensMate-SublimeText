@@ -14,6 +14,11 @@ To override default MavensMate settings, modify user-specific settings (MavensMa
 	//for example: "/Users/username/Documents/workspaces/mavensmate" (notice the absolute path)
 	"mm_workspace" : "",
 
+	//set to location where you wish your custom metadata templates to use (must be an existing directory)
+	//You can find the existing templates in '/Users/jairzheng/Library/Application Support/Sublime Text 2/Packages/User/MavensMate/support/templates'
+	//for example: "/Users/username/Library/Application Support/Sublime Text 2/Packages/User/mm-templates" (notice the absolute path)
+	"mm_templates_folder" : "",
+
 	//set to desired Salesforce.com API version
 	"mm_api_version" : "26.0",
 

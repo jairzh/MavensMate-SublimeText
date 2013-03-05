@@ -233,10 +233,11 @@ module MavensMate
   #creates new metadata (ApexClass, ApexTrigger, ApexPage, ApexComponent)
   def self.new_metadata(options={})
     begin
-      object_name     = options[:object_api_name] || ""
-      apex_class_type = options[:apex_class_type] || "base"
-      meta_type       = options[:meta_type]
-      api_name        = options[:api_name]
+      object_name             = options[:object_api_name] || ""
+      apex_class_type         = options[:apex_class_type] || "base"
+      meta_type               = options[:meta_type]
+      api_name                = options[:api_name]
+      custom_templates_folder = options[:custom_templates_folder]
 
       client = MavensMate::Client.new
       if client.metadata_exist?(options)
@@ -246,11 +247,12 @@ module MavensMate
       end
 
       zip_file = MavensMate::FileFactory.put_local_metadata(
-        :api_name         => api_name, 
-        :meta_type        => meta_type, 
-        :object_name      => object_name, 
-        :dir              => "tmp", 
-        :apex_class_type  => apex_class_type
+        :api_name                => api_name,
+        :meta_type               => meta_type,
+        :object_name             => object_name,
+        :dir                     => "tmp",
+        :apex_class_type         => apex_class_type,
+        :custom_templates_folder => custom_templates_folder
       )
       result = client.deploy({
         :zip_file => zip_file, 
@@ -260,10 +262,11 @@ module MavensMate
         puts result.inspect
       else
         zip_file = MavensMate::FileFactory.put_local_metadata(
-          :api_name         => api_name, 
-          :meta_type        => meta_type, 
-          :object_name      => object_name, 
-          :apex_class_type  => apex_class_type
+          :api_name                => api_name,
+          :meta_type               => meta_type,
+          :object_name             => object_name,
+          :apex_class_type         => apex_class_type,
+          :custom_templates_folder => custom_templates_folder
         )
         #FileFactory.update_package_xml
         #MavensMate::FileFactory.put_spec_test(api_name) if meta_type == "ApexPage"

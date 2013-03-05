@@ -241,11 +241,12 @@ module MavensMate
       #puts metadata in a specified directory
       #if [:dir] is nil, it's assumed you want to put it in the project folder              
       def put_local_metadata(options = { })
-        api_name        = options[:api_name]
-        meta_type       = options[:meta_type]
-        object_name     = options[:object_name]        
-        dir             = options[:dir]
-        apex_class_type = options[:apex_class_type]
+        api_name                = options[:api_name]
+        meta_type               = options[:meta_type]
+        object_name             = options[:object_name]
+        dir                     = options[:dir]
+        apex_class_type         = options[:apex_class_type]
+        custom_templates_folder = options[:custom_templates_folder]
         
         if dir.nil?       
           dir = ENV['MM_CURRENT_PROJECT_DIRECTORY'] + "/src/" + META_DIR_MAP[meta_type]
@@ -264,7 +265,7 @@ module MavensMate
           Dir.chdir(dir)
         end
 
-        file_name = put_src_file(:api_name => api_name, :meta_type => meta_type, :object_name => object_name, :apex_class_type => apex_class_type)
+        file_name = put_src_file(:api_name => api_name, :meta_type => meta_type, :object_name => object_name, :apex_class_type => apex_class_type, :custom_templates_folder => custom_templates_folder)
         put_meta_file(:api_name => api_name, :meta_type => meta_type, :object_name => object_name)
         
         if ! options[:dir].nil?
@@ -454,6 +455,7 @@ module MavensMate
           meta_type = options[:meta_type]
           object_name = options[:object_name]
           apex_class_type = options[:apex_class_type]
+          templates_folder = options[:custom_templates_folder] || "#{ENV['TM_BUNDLE_SUPPORT']}/templates"
           file_name = "#{api_name}" + META_EXT_MAP[meta_type]
           template = nil
           if meta_type == "ApexClass" && ! apex_class_type.nil?
@@ -475,9 +477,9 @@ module MavensMate
             else
               template_name = "ApexClass"
             end
-            template = ERB.new File.new("#{ENV['TM_BUNDLE_SUPPORT']}/templates/#{template_name}.html.erb").read, nil, "%"            
+            template = ERB.new File.new("#{templates_folder}/#{template_name}.html.erb").read, nil, "%"
           else
-            template = ERB.new File.new("#{ENV['TM_BUNDLE_SUPPORT']}/templates/#{meta_type}.html.erb").read, nil, "%"            
+            template = ERB.new File.new("#{templates_folder}/#{meta_type}.html.erb").read, nil, "%"
           end               
           erb = template.result(binding)        
           src = File.new(file_name, "w")
@@ -491,10 +493,11 @@ module MavensMate
           api_name = options[:api_name]
           meta_type = options[:meta_type]
           object_name = options[:object_name]
-        
+          templates_folder = options[:custom_templates_folder] || "#{ENV['TM_BUNDLE_SUPPORT']}/templates"
+
           src_meta_file_name = api_name + META_EXT_MAP[meta_type] + "-meta.xml"
         
-          template = ERB.new File.new("#{ENV['TM_BUNDLE_SUPPORT']}/templates/meta.html.erb").read, nil, "-"
+          template = ERB.new File.new("#{templates_folder}/meta.html.erb").read, nil, "-"
           erb = template.result(binding)        
           src = File.new(src_meta_file_name, "w")
           src.puts(erb)

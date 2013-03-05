@@ -405,13 +405,16 @@ def new_metadata(self, opts={}):
     printer = PanelPrinter.get(self.view.window().id())
     printer.show()
     printer.write('\nCreating New '+opts['metadata_type']+' => ' + opts['metadata_name'] + '\n')
-    param1 = ''
+    param1 = "{:meta_type=>\""+opts['metadata_type']+"\", :api_name=>\""+opts['metadata_name']+"\""
+    custom_templates_folder = settings.get('mm_templates_folder', 1);
+    if os.path.exists(custom_templates_folder):
+        param1 += ", :custom_templates_folder=>\"" + custom_templates_folder + "\""
     if opts['metadata_type'] == 'ApexClass':
-        param1 = "{:meta_type=>\""+opts['metadata_type']+"\", :api_name=>\""+opts['metadata_name']+"\", :apex_class_type=>\""+opts['apex_class_type']+"\"}"
+        param1 +=  ", :apex_class_type=>\""+opts['apex_class_type']+"\"}"
     elif opts['metadata_type'] == 'ApexTrigger':
-        param1 = "{:meta_type=>\""+opts['metadata_type']+"\", :api_name=>\""+opts['metadata_name']+"\", :object_api_name=>\""+opts['object_api_name']+"\"}"
+        param1 += ", :object_api_name=>\""+opts['object_api_name']+"\"}"
     else:
-        param1 = "{:meta_type=>\""+opts['metadata_type']+"\", :api_name=>\""+opts['metadata_name']+"\"}"
+        param1 += "}"
     threads = []
     thread = MetadataAPICall("new_metadata", "'"+param1+"' '"+mm_project_directory()+"'")
     threads.append(thread)
